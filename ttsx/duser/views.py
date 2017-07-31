@@ -1,3 +1,23 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from .models import UserInfo
+
 
 # Create your views here.
+
+def login(request):
+    context = {'title': '登陆'}
+    return render(request, 'duser/login.html', context)
+
+
+def register(request):
+    context = {'title': '注册'}
+    return render(request, 'duser/register.html', context)
+
+
+def index(request):
+    return redirect('duser:login')
+
+
+
+def check_name(request):
+    name = request.GET.get('uname')
