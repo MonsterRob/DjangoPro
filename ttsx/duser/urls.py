@@ -9,4 +9,5 @@ urlpatterns = [
     url(r'^check_name/$', views.check_name, name='check_name'),
     url(r'^check_login/$', views.check_login, name='check_login'),
     url(r'^register_in/$', views.register_in, name='register_in'),
+    url(r'^login_ok/$', views.login_ok, name='login_ok'),
 ]

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import UserInfo
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from hashlib import md5
 
 
@@ -31,7 +31,22 @@ def check_name(request):
 
 
 def check_login(request):
-    pass
+    uname = request.POST.get('username')
+    user = UserInfo.objects.get(uname=uname)  # get 在这里不会为空
+    upwd = request.POST.get('pwd')
+    md = md5()
+    md.update(upwd.encode())
+
+    #  登陆成功 用户获得授权 登陆失败
+    if user.upwd == md.hexdigest():
+
+        return redirect('duser:login_ok')
+    else:
+        return redirect('duser:login')
+
+
+
+
 
 
 def register_in(request):
@@ -51,3 +66,7 @@ def register_in(request):
     user_new.upwd = md.hexdigest()
     user_new.save()
     return redirect('duser:login')
+
+
+def login_ok(request):
+    return HttpResponse('login ok')

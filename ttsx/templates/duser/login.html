@@ -20,10 +20,10 @@
                 <form action="/user/check_login/" method="post">
                     {% csrf_token %}
 
-                    <input type="text" name="username" class="name_input" placeholder="请输入用户名" id="id_username">
+                    <input type="text" name="username" class="name_input" placeholder="请输入用户名" id="user_name">
                     <div class="user_error">输入错误</div>
 
-                    <input type="password" name="pwd" class="pass_input" placeholder="请输入密码" id="id_password">
+                    <input type="password" name="pwd" class="pass_input" placeholder="请输入密码" id="user_pwd">
                     <div class="pwd_error">输入错误</div>
 
                     <div class="more_input clearfix">
@@ -31,7 +31,7 @@
                         <label>记住用户名</label>
                         <a href="#">忘记密码</a>
                     </div>
-                    <input type="submit" name="" value="登录" class="input_submit">
+                    <input type="submit" name="" value="登录" class="input_submit" id="log_form">
                 </form>
             </div>
         </div>
