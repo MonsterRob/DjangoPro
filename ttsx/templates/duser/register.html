@@ -19,7 +19,7 @@
             <a href="/user/login">登录</a>
         </div>
         <div class="reg_form clearfix">
-            <form action="/user/register_in" method="post">
+            <form action="/user/register_in/" method="post" id="reg_form">
                 {% csrf_token %}
                 <ul>
                     <li>
@@ -58,22 +58,4 @@
 
 </div>
 
-
-<script>
-    $('#user_name').blur(function () {
-        var user_name = $(this).val();
-        // 取数据库查询是否有重复
-        $.get('/user/check_name', {'uname': user_name}, function (data) {
-            // 返回yes 或者no
-            if (data['result']) {
-                // 数据库有数据 不可以注册
-//                alert('有数据')
-            }
-            else {
-                // 数据库没数据 可以注册
-//                alert('没数据')
-            }
-        });
-    });
-</script>
 {% endblock body%}

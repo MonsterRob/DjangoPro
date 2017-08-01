@@ -1,5 +1,7 @@
 {% extends "duser/base.html" %}
-
+{% block script%}
+<script type="text/javascript" src="/static/js/login.js"></script>
+{% endblock%}
 {% block body %}
 <div class="login_top clearfix">
     <a href="index.html" class="login_logo"><img src="/static/images/logo02.png"></a>
@@ -15,13 +17,15 @@
                 <a href="/user/register">立即注册</a>
             </div>
             <div class="form_input">
-                <form action="/user/check_login" method="post">
+                <form action="/user/check_login/" method="post">
                     {% csrf_token %}
 
-                    <input type="text" name="username" class="name_input" placeholder="请输入用户名">
+                    <input type="text" name="username" class="name_input" placeholder="请输入用户名" id="id_username">
                     <div class="user_error">输入错误</div>
-                    <input type="password" name="pwd" class="pass_input" placeholder="请输入密码">
+
+                    <input type="password" name="pwd" class="pass_input" placeholder="请输入密码" id="id_password">
                     <div class="pwd_error">输入错误</div>
+
                     <div class="more_input clearfix">
                         <input type="checkbox" name="">
                         <label>记住用户名</label>

@@ -39,7 +39,8 @@ $(function(){
 
 
 	function check_user_name(){
-		var len = $('#user_name').val().length;
+        var user_name = $('#user_name').val();
+		var len = user_name.length;
 		if(len<5||len>20)
 		{
 			$('#user_name').next().html('请输入5-20个字符的用户名')
@@ -48,8 +49,19 @@ $(function(){
 		}
 		else
 		{
+		    $.get('/user/check_name/',{'uname':user_name}, function (data) {
+                if (data['result']){
+                    // 数据库有数据
+                    $('#user_name').next().html('此用户名已被注册')
+			        $('#user_name').next().show();
+			        error_name = true;
+			        return false;
+                }
+            });
+
 			$('#user_name').next().hide();
 			error_name = false;
+
 		}
 	}
 
@@ -113,13 +125,14 @@ $(function(){
 
 		if(error_name == false && error_password == false && error_check_password == false && error_email == false && error_check == false)
 		{
+		    // 可以发送注册请求
 			return true;
 		}
 		else
 		{
+			// 阻止发送注册请求
 			return false;
 		}
 
 	});
-
-})
+});
