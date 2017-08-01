@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import UserInfo
+from django.http import JsonResponse
 
 
 # Create your views here.
@@ -18,6 +19,17 @@ def index(request):
     return redirect('duser:login')
 
 
-
 def check_name(request):
     name = request.GET.get('uname')
+
+    obj = UserInfo.objects.filter(uname=name)
+
+    if obj:
+        return JsonResponse({'result': True})
+    else:
+        return JsonResponse({'result': False})
+
+
+def check_login(request):
+
+    pass

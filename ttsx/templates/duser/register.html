@@ -16,10 +16,11 @@
     <div class="r_con fr">
         <div class="reg_title clearfix">
             <h1>用户注册</h1>
-            <a href="#">登录</a>
+            <a href="/user/login">登录</a>
         </div>
         <div class="reg_form clearfix">
-            <form>
+            <form action="" method="post">
+                {% csrf_token %}
                 <ul>
                     <li>
                         <label>用户名:</label>
@@ -56,14 +57,23 @@
     </div>
 
 </div>
-{% endblock body%}
+
 
 <script>
     $('#user_name').blur(function () {
         var user_name = $(this).val();
         // 取数据库查询是否有重复
-        $.get('duser:check_name',{'uname':user_name}, function (data) {
+        $.get('/user/check_name', {'uname': user_name}, function (data) {
             // 返回yes 或者no
+            if (data['result']) {
+                // 数据库有数据 不可以注册
+//                alert('有数据')
+            }
+            else {
+                // 数据库没数据 可以注册
+//                alert('没数据')
+            }
         });
     });
 </script>
+{% endblock body%}
