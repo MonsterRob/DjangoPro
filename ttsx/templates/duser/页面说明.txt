@@ -28,22 +28,85 @@
 
 10、user_center_site.html 用户中心-用户收货地址页 用户中心功能三，查看和设置用户的收货地址
 
-业务逻辑设计：
-首页导向--->:
-    导航栏   1 登陆
-            2 注册
-            3 用户中心
-            4 我的购物车
-            5 我的订单
-    logo    通用首页
-    ...
-    全部商品分类
-            1
-    商品
-            1 商品详情页
-    查看跟多
-            1 商品列表
+1 首页 页面结构
+    head ...
+        div1 class header_con
+        div2 class searchbar clearfix
+        div3 class navbar_con
+    div4 class center_con clearfix
+    div5*6 class list_model
+        div6 class footer
+    script*2
+2 商品列表
+    head ...
+        div1 class header_con
+        div2 class searchbar clearfix
+        div3 class navbar_con
+    div4 class breadcrumb
+    div5 class main_wrap clearfix
+        div6 class footer
+3 商品详情
+    head ...
+        div1 class header_con
+        div2 class searchbar clearfix
+        div3 class navbar_con
+    div4 class breadcrumb
+    div5 class goods_detail_con clearfix
+    div6 class main_wrap clearfix
+        div7 class footer
+    div8 class add_jump
+    script*2
+4 购物车
+    head ...
+        div1 class header_con
+        div2 class searchbar clearfix
+    div3 class total_count
+    ul4*4
+        div5 class footer
+5 提交订单
+    head ...
+        div1 class header_con
+        div2 class searchbar clearfix
+    (h3+div)*4 3
+    div4 class order_submit clearfix
+        div5 class footer
+    div6 class popon_con
+    script*2
+6 登陆
+    head ...
+    div1 class login_top clearfix
+    div2 class login_form_bg
+    div3 class footer no-mp
+7 注册
+    head ...
+    div1 class register_con
+    div2 class footer no-mp
 
-公用部分 顶部导航栏
-搜索栏
-底部栏
+8 用户中心-个人信息
+    head ...
+        div1 class header_con
+        div2 class search_bar clearfix
+    div3 main_con clearfix
+        div4 class footer
+9 用户中心-全部订单
+    head ...
+        div1 class header_con
+        div2 class search_bar clearfix
+    div3 main_con clearfix
+        div4 class footer
+
+10用户中心-收货地址
+    head ...
+        div1 class header_con
+        div2 class search_bar clearfix
+    div3 main_con clearfix
+        div4 class footer
+
+1 所有页面共有
+    标题 两个坑
+    body 一个坑
+2 common 公用
+3 user 公用
+
+
+

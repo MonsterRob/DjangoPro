@@ -1,12 +1,14 @@
-{% extends "duser/base.html" %}
-{% block script%}
+{% extends "duser/base_user.html" %}
+{% block title%}登陆{% endblock title%}
+{% block top_script%}
+<script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
 <script type="text/javascript" src="/static/js/login.js"></script>
-{% endblock%}
-{% block body %}
+{% endblock top_script%}
+
+{%block for_login%}
 <div class="login_top clearfix">
     <a href="{% url 'common:index'%}" class="login_logo"><img src="/static/images/logo02.png"></a>
 </div>
-
 <div class="login_form_bg">
     <div class="login_form_wrap clearfix">
         <div class="login_banner fl"></div>
@@ -37,6 +39,16 @@
         </div>
     </div>
 </div>
-{% endblock body%}
+{%endblock for_login%}
+
+{%block header_con%}
+{%endblock header_con%}
+
+{% block search_bar%}
+{% endblock search_bar%}
+
+{%block main_con%}
+{% endblock main_con%}
+
 
 

@@ -13,3 +13,10 @@ def detail(request):
 def more_goods(request):
     return render(request, 'duser/list.html')
 
+
+def cart(request):
+    return render(request, 'duser/cart.html')
+
+
+def place_order(request):
+    return render(request, 'duser/place_order.html')

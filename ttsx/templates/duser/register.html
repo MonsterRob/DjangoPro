@@ -1,10 +1,14 @@
-{% extends "duser/base.html"%}
+{% extends "duser/base_user.html"%}
 
-{% block script%}
+{% block title%}注册{% endblock title%}
+{% block top_script%}
+
+<script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
 <script type="text/javascript" src="/static/js/register.js"></script>
-{% endblock script%}
+{% endblock top_script%}
 
-{% block body%}
+
+{%block for_register%}
 <div class="register_con">
     <div class="l_con fl">
         <a class="reg_logo"><img src="/static/images/logo02.png"></a>
@@ -57,4 +61,13 @@
 
 
 </div>
-{% endblock body%}
+{%endblock for_register%}
+
+{%block header_con%}
+{%endblock header_con%}
+
+{% block search_bar%}
+{% endblock search_bar%}
+
+{%block main_con%}
+{% endblock main_con%}
