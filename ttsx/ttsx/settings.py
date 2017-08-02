@@ -36,7 +36,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'duser.apps.DuserConfig'
+    'duser.apps.DuserConfig',
+    'common.apps.CommonConfig',
 
 ]
 

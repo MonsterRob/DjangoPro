@@ -10,4 +10,8 @@ urlpatterns = [
     url(r'^check_login/$', views.check_login, name='check_login'),
     url(r'^register_in/$', views.register_in, name='register_in'),
     url(r'^login_ok/$', views.login_ok, name='login_ok'),
+    url(r'^user_center_info/$', views.user_center_info, name='user_center_info'),
+    url(r'^user_center_order/$', views.user_center_order, name='user_center_order'),
+    url(r'^user_center_site/$', views.user_center_site, name='user_center_site'),
+
 ]

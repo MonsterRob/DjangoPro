@@ -45,10 +45,6 @@ def check_login(request):
         return redirect('duser:login')
 
 
-
-
-
-
 def register_in(request):
     # 获取注册信息 创建模型对象并存储
     # user_name pwd email
@@ -68,5 +64,18 @@ def register_in(request):
     return redirect('duser:login')
 
 
+# 登陆成功
 def login_ok(request):
     return HttpResponse('login ok')
+
+
+def user_center_info(request):
+    return render(request, 'duser/user_center_info.html')
+
+
+def user_center_order(request):
+    return render(request, 'duser/user_center_order.html')
+
+
+def user_center_site(request):
+    return render(request, 'duser/user_center_site.html')
