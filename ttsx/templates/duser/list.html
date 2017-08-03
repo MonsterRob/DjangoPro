@@ -1,195 +1,106 @@
-{%extends 'duser/base_common.html'%}
-{% block title%}商品列表{% endblock title%}
+{% extends 'duser/base_common.html' %}
+{% block title %}商品列表{% endblock title %}
 
 
-{% block navbar_con_son1%}
-{% endblock navbar_con_son1%}
-{%block breadcrumb%}
-<div class="breadcrumb">
-		<a href="#">全部分类</a>
-		<span>></span>
-		<a href="#">新鲜水果</a>
-	</div>
-{%endblock breadcrumb%}
-{% block search_bar_1%}
-{% endblock search_bar_1%}
+{% block navbar_con_son1 %}
+{% endblock navbar_con_son1 %}
+{% block breadcrumb %}
+    <div class="breadcrumb">
+        <a href="#">全部分类</a>
+        <span>></span>
+        <a href="#">{{ typeinfo.ttitle }}</a>
+    </div>
+{% endblock breadcrumb %}
+{% block search_bar_1 %}
+{% endblock search_bar_1 %}
 
 
-{%block main_wrap%}
-<div class="main_wrap clearfix">
-		<div class="l_wrap fl clearfix">
-			<div class="new_goods">
-				<h3>新品推荐</h3>
-				<ul>
-					<li>
-						<a href="#"><img src="/static/images/goods/goods001.jpg"></a>
-						<h4><a href="#">进口柠檬</a></h4>
-						<div class="prize">￥3.90</div>
-					</li>
-					<li>
-						<a href="#"><img src="/static/images/goods/goods002.jpg"></a>
-						<h4><a href="#">玫瑰香葡萄</a></h4>
-						<div class="prize">￥16.80</div>
-					</li>
-				</ul>
-			</div>
-		</div>
+{% block main_wrap %}
+    <div class="main_wrap clearfix">
+        <div class="l_wrap fl clearfix">
+            <div class="new_goods">
+                <h3>新品推荐</h3>
+                <ul>
+                    <li>
+                        <a href="#"><img src="/static/images/goods/goods001.jpg"></a>
+                        <h4><a href="#">进口柠檬</a></h4>
+                        <div class="prize">￥3.90</div>
+                    </li>
+                    <li>
+                        <a href="#"><img src="/static/images/goods/goods002.jpg"></a>
+                        <h4><a href="#">玫瑰香葡萄</a></h4>
+                        <div class="prize">￥16.80</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
 
-		<div class="r_wrap fr clearfix">
-			<div class="sort_bar">
-				<a href="#" class="active">默认</a>
-				<a href="#">价格</a>
-				<a href="#">人气</a>
-			</div>
+        <div class="r_wrap fr clearfix">
+            <div class="sort_bar">
+                <a href="#" class="active">默认</a>
+                <a href="#">价格</a>
+                <a href="#">人气</a>
+            </div>
 
-			<ul class="goods_type_list clearfix">
-				<li>
-					<a href="detail.html"><img src="/static/images/goods/goods003.jpg"></a>
-					<h4><a href="detail.html">大兴大棚草莓</a></h4>
-					<div class="operate">
-						<span class="prize">￥16.80</span>
-						<span class="unit">16.80/500g</span>
-						<a href="#" class="add_goods" title="加入购物车"></a>
-					</div>
-				</li>
+            <ul class="goods_type_list clearfix">
+                {% for goods in page %}
+                    <li>
+                        <a href="{% url 'common:detail' goods.id %}"><img src="/static/{{ goods.gpic }}"></a>
+                        <h4><a href="{% url 'common:detail' goods.id %}">{{ goods.gtitle }}</a></h4>
+                        <div class="operate">
+                            <span class="prize">￥{{ goods.gprice }}</span>
+                            <span class="unit">{{ goods.gunit }}</span>
+                            <a href="#" class="add_goods" title="加入购物车"></a>
+                        </div>
+                    </li>
+                {% endfor %}
 
-				<li>
-					<a href="#"><img src="/static/images/goods/goods004.jpg"></a>
-					<h4><a href="#">吐鲁番梨光杏</a></h4>
-					<div class="operate">
-						<span class="prize">￥5.50</span>
-						<span class="unit">5.50/500g</span>
-						<a href="#" class="add_goods" title="加入购物车"></a>
-					</div>
-				</li>
 
-				<li>
-					<a href="#"><img src="/static/images/goods/goods005.jpg"></a>
-					<h4><a href="#">黄肉桃</a></h4>
-					<div class="operate">
-						<span class="prize">￥10.00</span>
-						<span class="unit">10.00/500g</span>
-						<a href="#" class="add_goods" title="加入购物车"></a>
-					</div>
-				</li>
+            </ul>
+            <div class="pagenation">
 
-				<li>
-					<a href="#"><img src="/static/images/goods/goods006.jpg"></a>
-					<h4><a href="#">进口西梅</a></h4>
-					<div class="operate">
-						<span class="prize">￥28.80</span>
-						<span class="unit">28.8/500g</span>
-						<a href="#" class="add_goods" title="加入购物车"></a>
-					</div>
-				</li>
+                {% if page.has_previous %}
+                    <a onclick="void(0);return false;" href="#"  data-typeid="{{ typeinfo.id }}" data-page="{{ 1 }}">首页</a>
+                    <a href="/more_goods{{ typeinfo.id }}_{{ page.number|add:-1 }}/">上一页</a>
+                {% endif %}
 
-				<li>
-					<a href="#"><img src="/static/images/goods/goods007.jpg"></a>
-					<h4><a href="#">香梨</a></h4>
-					<div class="operate">
-						<span class="prize">￥6.45</span>
-						<span class="unit">6.45/500g</span>
-						<a href="#" class="add_goods" title="加入购物车"></a>
-					</div>
-				</li>
+                {% for p_index in prange %}
 
-				<li>
-					<a href="#"><img src="/static/images/goods/goods008.jpg"></a>
-					<h4><a href="#">栗子</a></h4>
-					<div class="operate">
-						<span class="prize">￥9.50</span>
-						<span class="unit">9.50/500g</span>
-						<a href="#" class="add_goods" title="加入购物车"></a>
-					</div>
-				</li>
+                    {% if p_index == page.number %}
 
-				<li>
-					<a href="#"><img src="/static/images/goods/goods009.jpg"></a>
-					<h4><a href="#">海南香蕉</a></h4>
-					<div class="operate">
-						<span class="prize">￥3.30</span>
-						<span class="unit">3.30/500g</span>
-						<a href="#" class="add_goods" title="加入购物车"></a>
-					</div>
-				</li>
+                        <a href="/more_goods{{ typeinfo.id }}_{{ p_index }}/" class="active">{{ p_index }}</a>
+                    {% else %}
+                        <a href="/more_goods{{ typeinfo.id }}_{{ p_index }}/">{{ p_index }}</a>
+                    {% endif %}
 
-				<li>
-					<a href="#"><img src="/static/images/goods/goods010.jpg"></a>
-					<h4><a href="#">青苹果</a></h4>
-					<div class="operate">
-						<span class="prize">￥5.00</span>
-						<span class="unit">5.00/500g</span>
-						<a href="#" class="add_goods" title="加入购物车"></a>
-					</div>
-				</li>
+                {% endfor %}
 
-				<li>
-					<a href="#"><img src="/static/images/goods/goods011.jpg"></a>
-					<h4><a href="#">山莓</a></h4>
-					<div class="operate">
-						<span class="prize">￥28.80</span>
-						<span class="unit">28.8/500g</span>
-						<a href="#" class="add_goods" title="加入购物车"></a>
-					</div>
-				</li>
+                {% if page.has_next %}
+                    <a href="/more_goods{{ typeinfo.id }}_{{ page.number|add:+1 }}/">下一页</a>
+                    <a href="/more_goods{{ typeinfo.id }}_{{ page.paginator.num_pages }}/">末页</a>
+                    <a href="#">末页</a>
 
-				<li>
-					<a href="#"><img src="/static/images/goods/goods012.jpg"></a>
-					<h4><a href="#">奇异果</a></h4>
-					<div class="operate">
-						<span class="prize">￥25.80</span>
-						<span class="unit">25.8/500g</span>
-						<a href="#" class="add_goods" title="加入购物车"></a>
-					</div>
-				</li>
-				<li>
-					<a href="#"><img src="/static/images/goods/goods013.jpg"></a>
-					<h4><a href="#">蜜桔</a></h4>
-					<div class="operate">
-						<span class="prize">￥4.80</span>
-						<span class="unit">4.8/500g</span>
-						<a href="#" class="add_goods" title="加入购物车"></a>
-					</div>
-				</li>
-				<li>
-					<a href="#"><img src="/static/images/goods/goods014.jpg"></a>
-					<h4><a href="#">脐橙</a></h4>
-					<div class="operate">
-						<span class="prize">￥3.50</span>
-						<span class="unit">3.50/500g</span>
-						<a href="#" class="add_goods" title="加入购物车"></a>
-					</div>
-				</li>
-				<li>
-					<a href="#"><img src="/static/images/goods/goods001.jpg"></a>
-					<h4><a href="#">进口柠檬</a></h4>
-					<div class="operate">
-						<span class="prize">￥3.90</span>
-						<span class="unit">3.90/500g</span>
-						<a href="#" class="add_goods" title="加入购物车"></a>
-					</div>
-				</li>
-				<li>
-					<a href="#"><img src="/static/images/goods/goods002.jpg"></a>
-					<h4><a href="#">玫瑰香葡萄</a></h4>
-					<div class="operate">
-						<span class="prize">￥16.80</span>
-						<span class="unit">16.80/500g</span>
-						<a href="#" class="add_goods" title="加入购物车"></a>
-					</div>
-				</li>
-			</ul>
-			<div class="pagenation">
-				<a href="#">&lt;上一页</a>
-				<a href="#" class="active">1</a>
-				<a href="#">2</a>
-				<a href="#">3</a>
-				<a href="#">4</a>
-				<a href="#">5</a>
-				<a href="#">下一页></a>
-			</div>
-		</div>
-	</div>
-{%endblock main_wrap%}
-	
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+{% endblock main_wrap %}
+
+{% block after_footer %}
+    <script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
+    <script>
+        $(document).delegate(".pagenation > a", 'click', function () {
+            var type_id = $(this).attr('data-typeid');
+            var page_id = $(this).attr('data-page');
+            $.get('/list_data'+type_id+'_'+page_id+'/', function (data) {
+                console.log(data)
+            });
+
+
+        });
+
+
+    </script>
+{% endblock after_footer %}
 

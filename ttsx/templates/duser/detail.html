@@ -4,9 +4,9 @@
 
 {% block search_bar_1%}
 {% endblock search_bar_1%}
-
 {% block navbar_con_son1%}
 {% endblock navbar_con_son1%}
+
 
 {%block breadcrumb%}
 <div class="breadcrumb">
@@ -17,16 +17,18 @@
 		<a href="#">商品详情</a>
 	</div>
 {%endblock breadcrumb%}
+
+
 {% block goods_detail_con%}
 <div class="goods_detail_con clearfix">
-		<div class="goods_detail_pic fl"><img src="/static/images/goods_detail.jpg"></div>
+		<div class="goods_detail_pic fl"><img src="/static/{{ goods.gpic }}"></div>
 
 		<div class="goods_detail_list fr">
-			<h3>大兴大棚草莓</h3>
-			<p>草莓浆果柔软多汁，味美爽口，适合速冻保鲜贮藏。草莓速冻后，可以保持原有的色、香、味，既便于贮藏，又便于外销。</p>
+			<h3>{{ goods.gtitle }}</h3>
+			<p>{{ goods.gjianjie }}</p>
 			<div class="prize_bar">
-				<span class="show_pirze">¥<em>16.80</em></span>
-				<span class="show_unit">单  位：500g</span>
+				<span class="show_pirze">¥<em>{{ goods.gprice }}</em></span>
+				<span class="show_unit">单  位：{{ goods.gunit }}</span>
 			</div>
 			<div class="goods_num clearfix">
 				<div class="num_name fl">数 量：</div>
@@ -44,6 +46,7 @@
 		</div>
 	</div>
 {% endblock goods_detail_con%}
+
 
 {%block main_wrap%}
 <div class="main_wrap clearfix">
@@ -74,7 +77,7 @@
 			<div class="tab_content">
 				<dl>
 					<dt>商品详情：</dt>
-					<dd>草莓采摘园位于北京大兴区 庞各庄镇四各庄村 ，每年1月-6月面向北京以及周围城市提供新鲜草莓采摘和精品礼盒装草莓，草莓品种多样丰富，个大香甜。所有草莓均严格按照有机标准培育，不使用任何化肥和农药。草莓在采摘期间免洗可以直接食用。欢迎喜欢草莓的市民前来采摘，也欢迎各大单位选购精品有机草莓礼盒，有机草莓礼盒是亲朋馈赠、福利送礼的最佳选择。 </dd>
+					<dd> {{ goods.gcontent|safe }}</dd>
 				</dl>
 			</div>
 
