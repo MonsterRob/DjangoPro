@@ -2,7 +2,78 @@
 {% block title%}登陆{% endblock title%}
 {% block top_script%}
 <script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
-<script type="text/javascript" src="/static/js/login.js"></script>
+<script>$(function () {
+    var error_name = false;
+    var error_password = false;
+    var user_name = $('#user_name');
+    var user_pwd = $('#user_pwd');
+
+    user_name.blur(function () {
+        check_user_name();
+    });
+    user_pwd.blur(function () {
+        check_pwd();
+    });
+
+    function check_user_name() {
+
+        var len = user_name.val().length;
+        if (len < 5 || len > 20) {
+            user_name.next().html('请输入5-20个字符的用户名')
+            user_name.next().show();
+            error_name = true;
+        }
+        else {
+            $.get('/user/check_name/', {'uname': user_name.val()}, function (data) {
+                if (!data['result']) {
+                    // 数据库有数据
+                    user_name.next().html('用户名不存在');
+                    user_name.next().show();
+                    error_name = true;
+                    return false;
+                }
+            });
+            user_name.next().hide();
+            error_name = false;
+
+        }
+    }
+
+    function check_pwd() {
+
+        var len = user_pwd.val().length;
+        if (len < 8 || len > 20) {
+            user_pwd.next().html('密码最少8位，最长20位');
+            user_pwd.next().show();
+            error_password = true;
+        }
+        else {
+
+            user_pwd.next().hide();
+            error_password = false;
+        }
+    }
+
+
+    $('#log_form').submit(function () {
+        check_user_name();
+        check_pwd();
+        return !(error_name || error_password);
+    });
+
+    if ('{{pwd_error}}') {
+
+        user_pwd.next().html('密码错误');
+        user_pwd.next().show();
+        error_password = true;
+
+    }
+
+
+
+});
+</script>
+
 {% endblock top_script%}
 
 {%block for_login%}
@@ -22,14 +93,15 @@
                 <form action="/user/check_login/" method="post">
                     {% csrf_token %}
 
-                    <input type="text" name="username" class="name_input" placeholder="请输入用户名" id="user_name">
+                    <input type="text" name="username" class="name_input" placeholder="请输入用户名" id="user_name"
+                           value="{{uname}}">
                     <div class="user_error">输入错误</div>
 
                     <input type="password" name="pwd" class="pass_input" placeholder="请输入密码" id="user_pwd">
                     <div class="pwd_error">输入错误</div>
 
                     <div class="more_input clearfix">
-                        <input type="checkbox" name="">
+                        <input type="checkbox" name="name_jz" >
                         <label>记住用户名</label>
                         <a href="#">忘记密码</a>
                     </div>

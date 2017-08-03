@@ -22,7 +22,7 @@
             <a href="/user/login">登录</a>
         </div>
         <div class="reg_form clearfix">
-            <form action="/user/register_in/" method="post" id="reg_form">
+            <form action="{%url 'duser:register_in'%}" method="post" id="reg_form">
                 {% csrf_token %}
                 <ul>
                     <li>
