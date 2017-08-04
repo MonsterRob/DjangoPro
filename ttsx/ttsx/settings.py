@@ -38,7 +38,9 @@ INSTALLED_APPS = [
 
     'duser.apps.DuserConfig',
     'common.apps.CommonConfig',
-    'tinymce'
+    'tinymce',
+    'rest_framework',
+    
 
 ]
 

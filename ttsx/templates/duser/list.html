@@ -60,25 +60,31 @@
             <div class="pagenation">
 
                 {% if page.has_previous %}
-                    <a onclick="void(0);return false;" href="#"  data-typeid="{{ typeinfo.id }}" data-page="{{ 1 }}">首页</a>
-                    <a href="/more_goods{{ typeinfo.id }}_{{ page.number|add:-1 }}/">上一页</a>
+                    <a onclick="void(0);return false;" href="#" data-typeid="{{ typeinfo.id }}"
+                       data-page="{{ 1 }}">首页</a>
+                    <a onclick="void(0);return false;" href="#" data-typeid="{{ typeinfo.id }}"
+                       data-page="{{ page.number|add:-1 }}">上一页</a>
+
                 {% endif %}
 
                 {% for p_index in prange %}
 
                     {% if p_index == page.number %}
 
-                        <a href="/more_goods{{ typeinfo.id }}_{{ p_index }}/" class="active">{{ p_index }}</a>
+                        <a class="active" onclick="void(0);return false;" href="#" data-typeid="{{ typeinfo.id }}"
+                           data-page="{{ p_index }}">{{ p_index }}</a>
                     {% else %}
-                        <a href="/more_goods{{ typeinfo.id }}_{{ p_index }}/">{{ p_index }}</a>
+                        <a onclick="void(0);return false;" href="#" data-typeid="{{ typeinfo.id }}"
+                           data-page="{{ p_index }}">{{ p_index }}</a>
                     {% endif %}
 
                 {% endfor %}
 
                 {% if page.has_next %}
-                    <a href="/more_goods{{ typeinfo.id }}_{{ page.number|add:+1 }}/">下一页</a>
-                    <a href="/more_goods{{ typeinfo.id }}_{{ page.paginator.num_pages }}/">末页</a>
-                    <a href="#">末页</a>
+                    <a onclick="void(0);return false;" href="#" data-typeid="{{ typeinfo.id }}"
+                       data-page="{{ page.number|add:+1 }}">下一页</a>
+                    <a onclick="void(0);return false;" href="#" data-typeid="{{ typeinfo.id }}"
+                       data-page="{{ page.paginator.num_pages }}">末页</a>
 
                 {% endif %}
 
@@ -91,10 +97,44 @@
     <script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
     <script>
         $(document).delegate(".pagenation > a", 'click', function () {
+            var clicked_a = $(this);
+            var p = clicked_a.parent();
+
+
             var type_id = $(this).attr('data-typeid');
             var page_id = $(this).attr('data-page');
-            $.get('/list_data'+type_id+'_'+page_id+'/', function (data) {
-                console.log(data)
+
+            $.get('/get_prange/', {'type_id': type_id, 'page_id': page_id}, function (data_prange) {
+                console.log(data_prange);
+
+                $.get('/get_list/', {'type_id': type_id, 'page_id': page_id}, function (data_list) {
+                    console.log(data_list);
+
+                    if (data_prange['index'] >= 2) {
+                        console.log(p.children().first().text());
+
+
+                        if (p.children().first().text() !== '首页') {
+                            var a_first = $("<a>", {
+                                onclick: "void(0);return false;",
+                                href: "#",
+                                'data-typeid': type_id,
+                                'data-page': 1,
+                                text: '首页'
+
+                            });
+
+                            p.prepend(a_first);
+
+                        }
+
+
+                    }
+
+
+                });
+
+
             });
 
 
