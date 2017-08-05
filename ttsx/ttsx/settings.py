@@ -36,11 +36,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'haystack',
+
     'duser.apps.DuserConfig',
     'common.apps.CommonConfig',
     'tinymce',
     'rest_framework',
-    
 
 ]
 
@@ -134,3 +135,12 @@ TINYMCE_DEFAULT_CONFIG = {
 }
 
 # 站点管理 wzz 123456789www
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.whoosh_cn_backend.WhooshEngine',
+        'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
+    }
+}
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+HAYSTACK_SEARCH_RESULTS_PER_PAGE = 12

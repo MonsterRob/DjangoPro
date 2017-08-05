@@ -3,6 +3,8 @@ from .models import UserInfo
 from django.http import JsonResponse
 from hashlib import md5
 from datetime import datetime, timedelta
+import json
+from common.models import Goodsinfo
 
 
 # Create your views here.
@@ -106,7 +108,14 @@ def register_in(request):
 # 用户中心-个人信息
 @logged
 def user_center_info(request):
-    return render(request, 'duser/user_center_info.html')
+    browsed = request.COOKIES.get('browsed')
+    goods = []
+    if browsed:
+        list_b = json.loads(browsed)
+        goods = Goodsinfo.objects.filter(pk__in=list_b)
+    context = {'goods': goods}
+
+    return render(request, 'duser/user_center_info.html', context)
 
 
 # 用户中心-全部订单

@@ -25,4 +25,6 @@ class Goodsinfo(models.Model):
     def __str__(self):
         return self.gtitle
 
+    
+
 

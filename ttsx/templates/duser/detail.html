@@ -1,5 +1,5 @@
 {% extends 'duser/base_common.html' %}
-
+{% load filters %}
 {% block title %}商品详情{% endblock title %}
 
 {% block search_bar_1 %}
@@ -18,6 +18,12 @@
     </div>
 {% endblock breadcrumb %}
 
+{% block nav %}
+    {% for item in list_ %}
+        <li><a href="{% url 'common:more_goods' item.type.id 1 1 %}"
+               class="{{ class_|my_index:forloop.counter0 }}">{{ item.type.ttitle }}</a></li>
+    {% endfor %}
+{% endblock nav %}
 
 {% block goods_detail_con %}
     <div class="goods_detail_con clearfix">
@@ -107,7 +113,10 @@
                 },
                 "fast", function () {
                     $(".add_jump").fadeOut('fast', function () {
-                        $('#show_count').html(2);
+                        var obj_show = $('#show_count');
+                        var num = parseInt(obj_show.html());
+                        num++;
+                        obj_show.html(num);
                     });
 
                 });

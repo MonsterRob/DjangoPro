@@ -20,5 +20,6 @@ urlpatterns = [
     url(r'^', include('common.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^user/', include('duser.urls')),
-    url(r'^tinymce/', include('tinymce.urls'))
+    url(r'^tinymce/', include('tinymce.urls')),
+    url(r'^search/', include('haystack.urls')),
 ]

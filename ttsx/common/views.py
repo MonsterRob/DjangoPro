@@ -4,8 +4,10 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse, HttpResponse
 from .serializer import GoodsSerializer
 from rest_framework.renderers import JSONRenderer
+from django.core import serializers
 from rest_framework.parsers import JSONParser
 import json
+from haystack.generic_views import SearchView
 
 
 # Create your views here.
@@ -28,20 +30,53 @@ def index(request):
 
 # 商品详情页
 def detail(request, goods_id):
-    try:
-        goods = Goodsinfo.objects.get(pk=goods_id)
+    types = TypeInfo.objects.all()
+    list_ = []
+    for typeinfo in types:
+        list_.append({
+            'type': typeinfo,
+        })
+    class_ = ['fruit', 'seafood', 'meet', 'egg', 'vegetables', 'ice']
 
-        context = {'goods': goods, 'kucun': goods.gkucun}
-        return render(request, 'duser/detail.html', context)
-    except Exception:
-        return render(request, '404.html')
+    goods = Goodsinfo.objects.get(pk=goods_id)
+    goods.gclick += 1
+    goods.save()
+    context = {'goods': goods, 'kucun': goods.gkucun, 'list_': list_, 'class_': class_}
+    response = render(request, 'duser/detail.html', context)
+
+    browsed = request.COOKIES.get('browsed')
+    if browsed:
+        list_b = json.loads(browsed)
+        if goods_id not in list_b:
+            list_b.append(goods_id)
+            list_b = json.dumps(list_b)
+            response.set_cookie('browsed', list_b)
+    else:
+        list_b = list()
+        list_b.append(goods_id)
+        list_b = json.dumps(list_b)
+        response.set_cookie('browsed', list_b)
+
+    return response
 
 
 # 商品列表页
-def more_goods(request, type_id, page_id):
-    print(type_id, page_id)
+def more_goods(request, type_id, page_id, order_key):
+    types = TypeInfo.objects.all()
+    # print(serializers.serialize('json', types))
+
+    list_ = []
+
+    for typeinfo in types:
+        list_.append({
+            'type': typeinfo,
+        })
+    class_ = ['fruit', 'seafood', 'meet', 'egg', 'vegetables', 'ice']
+
     typeinfo = TypeInfo.objects.get(pk=type_id)
-    goods_list = typeinfo.goodsinfo_set.order_by('-id')
+    orders = ['-id', 'gprice', '-gclick']
+
+    goods_list = typeinfo.goodsinfo_set.order_by(orders[int(order_key) - 1])
     paginator = Paginator(goods_list, 5)
 
     page_index = int(page_id)
@@ -65,7 +100,10 @@ def more_goods(request, type_id, page_id):
 
     context = {'typeinfo': typeinfo,
                'page': page,
-               'prange': prange}
+               'prange': prange,
+               'list_': list_,
+               'class_': class_,
+               'order_key': order_key}
 
     return render(request, 'duser/list.html', context)
 
@@ -157,3 +195,12 @@ class JSONResponse(HttpResponse):
         content = JSONRenderer().render(data)
         kwargs['content_type'] = 'application/json'
         super(JSONResponse, self).__init__(content, **kwargs)
+
+
+class MySearchView(SearchView):
+    def get_context_data(self, *args, **kwargs):
+        context = super(MySearchView, self).get_context_data(*args, **kwargs)
+        context['title'] = '搜索结果'
+        # context['cart'] = '1'
+        # context['isleft'] = '0'
+        return context
