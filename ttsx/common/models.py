@@ -1,5 +1,6 @@
 from django.db import models
 from tinymce.models import HTMLField
+from duser.models import UserInfo
 
 
 class TypeInfo(models.Model):
@@ -25,6 +26,9 @@ class Goodsinfo(models.Model):
     def __str__(self):
         return self.gtitle
 
-    
 
+class OrderInfo(models.Model):
+    user = models.ForeignKey(UserInfo)
+    goods_id = models.ForeignKey(Goodsinfo)
+    goods_count = models.IntegerField(default=0)
 

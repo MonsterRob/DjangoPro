@@ -48,7 +48,7 @@
             <div class="total">总价：<em>{{ goods.gprice }}</em></div>
             <div class="operate_btn">
                 <a href="javascript:;" class="buy_btn">立即购买</a>
-                <a href="javascript:;" class="add_cart" id="add_cart">加入购物车</a>
+                <a href="javascript:add_goods({{ goods.id }})" class="add_cart" id="add_cart">加入购物车</a>
             </div>
         </div>
     </div>
@@ -61,16 +61,15 @@
             <div class="new_goods">
                 <h3>新品推荐</h3>
                 <ul>
-                    <li>
-                        <a href="#"><img src="/static/images/goods/goods001.jpg"></a>
-                        <h4><a href="#">进口柠檬</a></h4>
-                        <div class="prize">￥3.90</div>
-                    </li>
-                    <li>
-                        <a href="#"><img src="/static/images/goods/goods002.jpg"></a>
-                        <h4><a href="#">玫瑰香葡萄</a></h4>
-                        <div class="prize">￥16.80</div>
-                    </li>
+                    {% for item_new in new_goods %}
+                        <li>
+                            <a href="#"><img src="/static/{{ item_new.gpic }}"></a>
+                            <h4><a href="{% url 'common:detail' item_new.id %}">{{ item_new.gtitle }}</a></h4>
+                            <div class="prize">￥{{ item_new.gprice }}</div>
+                        </li>
+
+                    {% endfor %}
+
                 </ul>
             </div>
         </div>
@@ -99,6 +98,7 @@
 {% block bottom_script %}
     <script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
     <script type="text/javascript">
+
         var $add_x = $('#add_cart').offset().top;
         var $add_y = $('#add_cart').offset().left;
 
@@ -162,6 +162,13 @@
             });
 
         });
+        function add_goods(gid) {
+            var gcount = $('.num_show').val();
+
+            $.get('/add_goods/', {'gid': gid, 'gcount': gcount}, function (data) {
+                console.log(data)
+            });
+        }
     </script>
 {% endblock bottom_script %}
 

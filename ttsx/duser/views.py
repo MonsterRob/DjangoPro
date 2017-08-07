@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import UserInfo
+from .models import UserInfo, AreaInfo
 from django.http import JsonResponse
 from hashlib import md5
 from datetime import datetime, timedelta
@@ -108,12 +108,14 @@ def register_in(request):
 # 用户中心-个人信息
 @logged
 def user_center_info(request):
+    uid = request.session['uid']
+    user = UserInfo.objects.get(pk=uid)
     browsed = request.COOKIES.get('browsed')
     goods = []
     if browsed:
         list_b = json.loads(browsed)
         goods = Goodsinfo.objects.filter(pk__in=list_b)
-    context = {'goods': goods}
+    context = {'goods': goods, 'user': user}
 
     return render(request, 'duser/user_center_info.html', context)
 
@@ -127,4 +129,53 @@ def user_center_order(request):
 # 用户中心-收货地址
 @logged
 def user_center_site(request):
-    return render(request, 'duser/user_center_site.html')
+    uid = request.session['uid']
+    user = UserInfo.objects.get(pk=uid)
+    context = {'user': user}
+    return render(request, 'duser/user_center_site.html', context)
+
+
+def parent(request):
+    plist = AreaInfo.objects.filter(aParent__isnull=True)
+    jsonList = []
+    for area in plist:
+        jsonList.append([area.id, area.atitle])
+
+    return JsonResponse({'data': jsonList})
+
+
+def sons(request):
+    id_ = request.GET.get('pid')
+
+    plist = AreaInfo.objects.filter(aParent_id=id_)
+
+    jsonList = []
+    for area in plist:
+        jsonList.append([area.id, area.atitle])
+
+    return JsonResponse(data={'data': jsonList})
+
+
+@logged
+def change_site(request):
+    dic = request.POST
+    province = dic['province']
+    city = dic['city']
+    county = dic['county']
+    province = AreaInfo.objects.get(pk=int(province)).atitle
+    county = AreaInfo.objects.get(pk=int(county)).atitle
+    city = AreaInfo.objects.get(pk=int(city)).atitle
+    detail = dic['detail']
+    address = province + ' ' + city + ' ' + county + ' ' + detail
+    recipients = dic['recipients']
+    phone = dic['phone']
+    uid = request.session['uid']
+    user = UserInfo.objects.get(pk=uid)
+    user.address = address
+    user.phone = phone
+    user.recipients = recipients
+    user.save()
+    data = {'address': address,
+            'recpi': recipients,
+            'ph': phone}
+    return JsonResponse(data)

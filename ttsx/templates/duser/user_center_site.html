@@ -1,41 +1,130 @@
-{% extends "duser/base_user.html"%}
-{%block class3%}
-active
-{%endblock class3%}
-{% block right_content%}
-<div class="right_content clearfix">
-				<h3 class="common_title2">收货地址</h3>
-				<div class="site_con">
-					<dl>
-						<dt>当前地址：</dt>
-						<dd>北京市 海淀区 东北旺西路8号中关村软件园 （李思 收） 182****7528</dd>
-					</dl>
-				</div>
-				<h3 class="common_title2">编辑地址</h3>
-				<div class="site_con">
-					<form>
-						<div class="form_group">
-							<label>收件人：</label>
-							<input type="text" name="">
-						</div>
-						<div class="form_group form_group2">
-							<label>详细地址：</label>
-							<textarea class="site_area"></textarea>
-						</div>
-						<div class="form_group">
-							<label>邮编：</label>
-							<input type="text" name="">
-						</div>
-						<div class="form_group">
-							<label>手机：</label>
-							<input type="text" name="">
-						</div>
+{% extends "duser/base_user.html" %}
+{% block class3 %}
+    active
+{% endblock class3 %}
+{% block right_content %}
+    <div class="right_content clearfix">
+        <h3 class="common_title2">收货地址</h3>
+        <div class="site_con">
+            <dl>
+                <dt>当前地址：</dt>
+                <dd><span id="address">{{ user.address }}</span>
+                    <span id="recpi">{{ user.recipients }}</span>
+                    <span id="ph">{{ user.phone }}</span>
 
-						<input type="submit" name="" value="提交" class="info_submit">
-					</form>
-				</div>
-		</div>
-{% endblock right_content%}
+                </dd>
+            </dl>
+        </div>
+        <h3 class="common_title2">编辑地址</h3>
+        <div class="site_con">
+            <form>
+                <div class="form_group">
+                    <label>收件人：</label>
+                    <input type="text" name="recipients" id="recipients">
+                </div>
+                <div class="form_group">
+                    <label>省市区选择：</label>
+                    <select name="province" id="province">
+                        <option value="">请选择省</option>
+                    </select>
+                    <select name="city" id="city">
+                        <option value="">请选择市</option>
+                    </select>
+                    <select name="county" id="county">
+                        <option value="">请选择区县</option>
+                    </select>
+
+                </div>
+                <div class="form_group form_group2">
+                    <label>详细地址：</label>
+                    <textarea class="site_area" name="detail"></textarea>
+                </div>
+
+                <div class="form_group">
+                    <label>手机：</label>
+                    <input type="text" name="phone" id="phone">
+                </div>
+
+                <input type="button" id="change_site" value="提交" class="info_submit">
+            </form>
+        </div>
+    </div>
+{% endblock right_content %}
+{% block bottom_script %}
+
+    <script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
+
+    <script>
+        $.get('/user/parent/', function (dic) {
+            var province = $('#province');
+            $.each(dic.data, function (index, list) {
+                province.append('<option value=' + list[0] + '>' + list[1] + '</option>');
+            });
+        });
+
+        $('#province').change(function () {
+            var pid = $(this).val();
+            $.get('/user/sons/', {'pid': pid}, function (dic) {
+                var city = $('#city');
+                city.empty().append('<option value="">请选择市</option>');
+                $('#county').empty().append('<option value="">请选择区县</option>');
+
+                $.each(dic.data, function (index, list) {
+                    city.append('<option value=' + list[0] + '>' + list[1] + '</option>');
+
+                });
+
+            });
+
+        });
+
+        $('#city').change(function () {
+            var pid = $(this).val();
+            $.get('/user/sons/', data = {'pid': pid}, function (dic) {
+                var county = $('#county');
+                county.empty().append('<option value="">请选择区县</option>');
+
+                $.each(dic.data, function (index, list) {
+                    county.append('<option value=' + list[0] + '>' + list[1] + '</option>');
+                });
+            });
+        });
+
+        $(function () {
+
+            $.ajaxSetup({
+                data: {csrfmiddlewaretoken: '{{ csrf_token }}'}
+            });
+
+            $('#change_site').click(function () {
+                var recipients = $('#recipients').val();
+                var phone = $('#phone').val();
+                var province = $('#province').val();
+                var city = $("#city").val();
+                var county = $('#county').val();
+                var detail = $('textarea[name="detail"]').val();
+
+                data = {
+                    'recipients': recipients,
+                    'phone': phone,
+                    'province': province,
+                    'city': city,
+                    'county': county,
+                    'detail': detail
+                };
+
+
+                $.post('/user/change_site/', data, function (got_data) {
+                    $('#address').text(got_data['address']);
+                    $('#recpi').text(got_data['recpi']);
+                    $('#ph').text(got_data['ph']);
+
+
+                });
+            });
+        });
+    </script>
+{% endblock bottom_script %}
 
 
 

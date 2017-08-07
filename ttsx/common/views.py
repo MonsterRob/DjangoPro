@@ -1,5 +1,5 @@
-from django.shortcuts import render
-from .models import TypeInfo, Goodsinfo
+from django.shortcuts import render, get_object_or_404
+from .models import TypeInfo, Goodsinfo, OrderInfo
 from django.core.paginator import Paginator
 from django.http import JsonResponse, HttpResponse
 from .serializer import GoodsSerializer
@@ -8,6 +8,8 @@ from django.core import serializers
 from rest_framework.parsers import JSONParser
 import json
 from haystack.generic_views import SearchView
+from duser.views import logged
+from duser.models import UserInfo
 
 
 # Create your views here.
@@ -41,9 +43,14 @@ def detail(request, goods_id):
     goods = Goodsinfo.objects.get(pk=goods_id)
     goods.gclick += 1
     goods.save()
-    context = {'goods': goods, 'kucun': goods.gkucun, 'list_': list_, 'class_': class_}
-    response = render(request, 'duser/detail.html', context)
+    new_goods = goods.gtype.goodsinfo_set.order_by('-id')[:2]
+    context = {'goods': goods,
+               'kucun': goods.gkucun,
+               'list_': list_,
+               'class_': class_,
+               'new_goods': new_goods}
 
+    response = render(request, 'duser/detail.html', context)
     browsed = request.COOKIES.get('browsed')
     if browsed:
         list_b = json.loads(browsed)
@@ -98,12 +105,15 @@ def more_goods(request, type_id, page_id, order_key):
         else:
             prange = range(page_index - 2, page_index + 3)
 
+    new_goods = typeinfo.goodsinfo_set.order_by('-id')[:2]
+
     context = {'typeinfo': typeinfo,
                'page': page,
                'prange': prange,
                'list_': list_,
                'class_': class_,
-               'order_key': order_key}
+               'order_key': order_key,
+               'new_goods': new_goods}
 
     return render(request, 'duser/list.html', context)
 
@@ -182,7 +192,51 @@ def get_prange(request):
 
 # 购物车页
 def cart(request):
-    return render(request, 'duser/cart.html')
+    #  获取购物车订单信息
+    #
+    orders = OrderInfo.objects.all()
+    context = {'orders': orders}
+    return render(request, 'duser/cart.html', context)
+
+
+# 添加到购物车
+@logged
+def add_goods(request):
+    # 用户id uid
+    # 商品id gid
+    # 数量 gcount
+    # 用户id 和商品id一致则只改变数量 否则 新增一条数据
+
+    uid = request.session['uid']
+    uid = UserInfo.objects.get(pk=uid)
+
+    gid = request.GET.get('gid')
+    gid = Goodsinfo.objects.get(pk=gid)
+
+    gcount = request.GET.get('gcount')
+    order = OrderInfo.objects.filter(user=uid, goods_id=gid)
+
+    if order:
+        order[0].goods_count += int(gcount)
+        order[0].save()
+    else:
+        new_order = OrderInfo()
+        new_order.user = uid
+        new_order.goods_id = gid
+        new_order.goods_count = gcount
+        new_order.save()
+
+    return JsonResponse({'isok': 1})
+
+
+# 从购物车删除
+@logged
+def del_goods(request):
+    # 商品id
+    gid = request.GET.get('gid')
+    order = OrderInfo.objects.get(goods_id_id=gid)
+    order.delete()
+    return JsonResponse({'isok': 1})
 
 
 # 提交订单页

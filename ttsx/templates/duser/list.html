@@ -16,7 +16,7 @@
 {% endblock search_bar_1 %}
 {% block nav %}
     {% for item in list_ %}
-        <li><a href="{% url 'common:more_goods' item.type.id 1 1%}"
+        <li><a href="{% url 'common:more_goods' item.type.id 1 1 %}"
                class="{{ class_|my_index:forloop.counter0 }}">{{ item.type.ttitle }}</a></li>
     {% endfor %}
 {% endblock nav %}
@@ -27,16 +27,15 @@
             <div class="new_goods">
                 <h3>新品推荐</h3>
                 <ul>
-                    <li>
-                        <a href="#"><img src="/static/images/goods/goods001.jpg"></a>
-                        <h4><a href="#">进口柠檬</a></h4>
-                        <div class="prize">￥3.90</div>
-                    </li>
-                    <li>
-                        <a href="#"><img src="/static/images/goods/goods002.jpg"></a>
-                        <h4><a href="#">玫瑰香葡萄</a></h4>
-                        <div class="prize">￥16.80</div>
-                    </li>
+                    {% for item_new in new_goods %}
+                        <li>
+                            <a href="#"><img src="/static/{{ item_new.gpic }}"></a>
+                            <h4><a href="{% url 'common:detail' item_new.id %}">{{ item_new.gtitle }}</a></h4>
+                            <div class="prize">￥{{ item_new.gprice }}</div>
+                        </li>
+
+                    {% endfor %}
+
                 </ul>
             </div>
         </div>
@@ -56,7 +55,7 @@
                         <div class="operate">
                             <span class="prize">￥{{ goods.gprice }}</span>
                             <span class="unit">{{ goods.gunit }}</span>
-                            <a href="#" class="add_goods" title="加入购物车"></a>
+                            <a href="javascript:add_goods({{ goods.id }});" class="add_goods" title="加入购物车"></a>
                         </div>
                     </li>
                 {% endfor %}
@@ -150,9 +149,17 @@
     </script>
     <script>
         $(function () {
-            var order_key = parseInt({{ order_key }})-1;
+            var order_key = parseInt({{ order_key }}) - 1;
             $('.sort_bar a').eq(order_key).addClass('active');
         });
+
+        function add_goods(gid) {
+
+            $.get('/add_goods/', {'gid': gid, 'gcount': 1}, function (data) {
+                console.log(data)
+            });
+        }
+
     </script>
 {% endblock after_footer %}
 
