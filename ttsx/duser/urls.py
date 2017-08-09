@@ -15,6 +15,6 @@ urlpatterns = [
     url(r'^user_center_site/$', views.user_center_site, name='user_center_site'),
     url(r'^parent/$', views.parent, name='parent'),
     url(r'^sons/$', views.sons, name='sons'),
-    url(r'^change_site/$', views.change_site, name='change_site')
+    url(r'^change_site/$', views.change_site, name='change_site'),
 
 ]

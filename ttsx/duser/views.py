@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from hashlib import md5
 from datetime import datetime, timedelta
 import json
-from common.models import Goodsinfo
+from common.models import Goodsinfo, BuyInfo, BuyDetailInfo
 
 
 # Create your views here.
@@ -123,7 +123,11 @@ def user_center_info(request):
 # 用户中心-全部订单
 @logged
 def user_center_order(request):
-    return render(request, 'duser/user_center_order.html')
+    # 需要拉取已结算订单信息和未结算订单信息
+    buyers = BuyInfo.objects.all()  # 所有订单
+    context = {'buyers': buyers}
+    # 一个订单关联多件商品
+    return render(request, 'duser/user_center_order.html', context)
 
 
 # 用户中心-收货地址
@@ -135,6 +139,8 @@ def user_center_site(request):
     return render(request, 'duser/user_center_site.html', context)
 
 
+# 地址编辑
+@logged
 def parent(request):
     plist = AreaInfo.objects.filter(aParent__isnull=True)
     jsonList = []
@@ -144,6 +150,8 @@ def parent(request):
     return JsonResponse({'data': jsonList})
 
 
+# 地址编辑
+@logged
 def sons(request):
     id_ = request.GET.get('pid')
 
@@ -156,6 +164,7 @@ def sons(request):
     return JsonResponse(data={'data': jsonList})
 
 
+# 地址编辑
 @logged
 def change_site(request):
     dic = request.POST

@@ -13,38 +13,44 @@
 {% endblock search_con %}
 {% block bar_text %}|&nbsp;&nbsp;&nbsp;&nbsp;购物车{% endblock bar_text %}
 {% block total_count %}
-    <div class="total_count">全部商品<em>{{ orders.count }}</em>件</div>
+    <div class="total_count">全部商品<em id="all">{{ orders.count }}</em>件</div>
 {% endblock total_count %}
 
 {% block for_cart %}
-    <ul class="cart_list_th clearfix">
-        <li class="col01">商品名称</li>
-        <li class="col02">商品单位</li>
-        <li class="col03">商品价格</li>
-        <li class="col04">数量</li>
-        <li class="col05">小计</li>
-        <li class="col06">操作</li>
-    </ul>
-    {% for order in orders %}
-        <ul class="cart_list_td clearfix" id="ul{{ order.goods_id.id }}">
-            <li class="col01"><input type="checkbox" name="" checked id="check{{ order.goods_id.id }}"></li>
-            <li class="col02"><img src="/static/{{ order.goods_id.gpic }}"></li>
-            <li class="col03">{{ order.goods_id.gtitle }}<br><em>{{ order.goods_id.gprice }}元/{{ order.goods_id.gunit }}</em>
-            </li>
-            <li class="col04">{{ order.goods_id.gunit }}</li>
-            <li class="col05"><span class="o_price">{{ order.goods_id.gprice }}</span>元</li>
-            <li class="col06">
-                <div class="num_add">
-                    <a href="javascript:add({{ order.goods_id.id }});" class="add{{ order.goods_id.id }} fl">+</a>
-                    <input type="text" class="num_show fl" value="{{ order.goods_count }}">
-                    <a href="javascript:minus({{ order.goods_id.id }});" class="minus{{ order.goods_id.id }} fl">-</a>
-                </div>
-            </li>
-            <li class="col07"><span><span class="xiaoji">25.80</span>元</span></li>
-            <li class="col08"><a href="javascript:del_goods({{ order.goods_id.id }}) ;">删除</a></li>
+    <form action="/to_jiesuan/" method="post" id="jiesuan">
+        {% csrf_token %}
+
+        <ul class="cart_list_th clearfix">
+            <li class="col01">商品名称</li>
+            <li class="col02">商品单位</li>
+            <li class="col03">商品价格</li>
+            <li class="col04">数量</li>
+            <li class="col05">小计</li>
+            <li class="col06">操作</li>
         </ul>
 
-    {% endfor %}
+        {% for order in orders %}
+            <ul class="cart_list_td clearfix" id="ul{{ order.goods_id.id }}">
+                <li class="col01"><input type="checkbox" name="gid" value="{{ order.id }}" checked id="check{{ order.goods_id.id }}"></li>
+                <li class="col02"><img src="/static/{{ order.goods_id.gpic }}"></li>
+                <li class="col03">{{ order.goods_id.gtitle }}<br><em>{{ order.goods_id.gprice }}元/{{ order.goods_id.gunit }}</em>
+                </li>
+                <li class="col04">{{ order.goods_id.gunit }}</li>
+                <li class="col05"><span class="o_price">{{ order.goods_id.gprice }}</span>元</li>
+                <li class="col06">
+                    <div class="num_add">
+                        <a href="javascript:add({{ order.goods_id.id }});" class="add{{ order.goods_id.id }} fl">+</a>
+                        <input type="text" class="num_show fl" value="{{ order.goods_count }}">
+                        <a href="javascript:minus({{ order.goods_id.id }});"
+                           class="minus{{ order.goods_id.id }} fl">-</a>
+                    </div>
+                </li>
+                <li class="col07"><span><span class="xiaoji">25.80</span>元</span></li>
+                <li class="col08"><a href="javascript:del_goods({{ order.goods_id.id }}) ;">删除</a></li>
+            </ul>
+        {% endfor %}
+    </form>
+
 {% endblock for_cart %}
 
 {% block navbar_con %}
@@ -55,9 +61,13 @@
         <li class="col01"><input type="checkbox" name="" checked="" id="control"></li>
         <li class="col02">全选</li>
         <li class="col03">合计(不含运费)：<span>¥</span><em id="sum">42.60</em><br>共计<b id="jianshu">2</b>件商品</li>
-        <li class="col04"><a href="place_order.html">去结算</a></li>
+        <li class="col04"><input type="submit" value="去结算" form="jiesuan"></li>
     </ul>
 {% endblock settelments %}
+
+
+
+
 {% block bottom_script %}
     <script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
     <script>
@@ -105,8 +115,11 @@
                 if (data['isok'] == 1) {
                     $('#ul' + gid).remove();
                     get_total();
+                    $('#all').text($(':checkbox:not(#control)').length);
+
                 }
             });
+
         }
         function add_goods(gid) {
             var gcount = $('.num_show').val();
@@ -121,7 +134,6 @@
 
         function add(gid) {
             var num = $('.add' + gid).next();
-
 
             $.get('/add_goods/', {'gid': gid, 'gcount': 1}, function (data) {
                 num.val(parseInt(num.val()) + 1);
@@ -144,6 +156,10 @@
             xiaoji();
             get_total();
         }
+        $.ajaxSetup({
+            data: {csrfmiddlewaretoken: '{{ csrf_token }}'}
+        });
+
 
     </script>
 {% endblock bottom_script %}

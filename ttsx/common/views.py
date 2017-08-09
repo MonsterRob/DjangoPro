@@ -1,5 +1,5 @@
-from django.shortcuts import render, get_object_or_404
-from .models import TypeInfo, Goodsinfo, OrderInfo
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import TypeInfo, Goodsinfo, OrderInfo, BuyInfo, BuyDetailInfo
 from django.core.paginator import Paginator
 from django.http import JsonResponse, HttpResponse
 from .serializer import GoodsSerializer
@@ -10,8 +10,14 @@ import json
 from haystack.generic_views import SearchView
 from duser.views import logged
 from duser.models import UserInfo
+from datetime import datetime
+from django.db import transaction
 
 
+# 加入购物车-编辑购物车-去结算-提交订单
+# 我的购物车展示所有加入到购物车的商品信息
+# 去结算--选择部分商品结算
+# 结算页-提交订单
 # Create your views here.
 # 全局首页
 def index(request):
@@ -190,7 +196,8 @@ def get_prange(request):
     return JsonResponse(content)
 
 
-# 购物车页
+# 购物车页-列出所有商品信息
+@logged
 def cart(request):
     #  获取购物车订单信息
     #
@@ -239,9 +246,78 @@ def del_goods(request):
     return JsonResponse({'isok': 1})
 
 
-# 提交订单页
-def place_order(request):
-    return render(request, 'duser/place_order.html')
+# # 提交订单 生成订单
+# @logged
+# def place_order(request):
+#     return JsonResponse({'isok': 1})
+
+
+# 去结算
+# 选中商品的gid
+@logged
+def to_jiesuan(request):
+    # 商品编号
+    dic = request.POST
+    gids = dic.getlist('gid')  # list
+    # 订单用户
+    user_id = request.session.get('uid')
+    user = UserInfo.objects.get(pk=user_id)
+    orders = OrderInfo.objects.filter(pk__in=gids)
+    context = {'user': user, 'orders': orders}
+    return render(request, 'duser/place_order.html', context)
+
+
+# 选择结算方式等，然后提交订单
+@logged
+def submit_order(request):
+    sid = transaction.savepoint()
+    try:
+        dic = request.POST
+        oids = dic.getlist('oid')
+        address = dic.get('address')
+
+        uid = request.session.get('uid')
+        buyer = BuyInfo()  # 构造订单
+        # 购买编号
+        buyer.buyid = datetime.now().strftime('%y%m%d%H%M%S%f%') + str(uid)
+
+        # 购买用户
+        buyer.buyuser = UserInfo.objects.get(pk=uid)
+        # 订单总价
+        buyer.buytotoal = 0
+        # 收货地址
+        buyer.buyaddress = address
+        buyer.save()
+        orders = OrderInfo.objects.filter(pk__in=oids)
+        totol = 0
+
+        for order in orders:
+            if order.goods_count > order.goods_id.gkucun:
+                transaction.savepoint_rollback(sid)
+                return redirect('/cart/')
+            else:
+                buydetail = BuyDetailInfo()
+                buydetail.buy = buyer
+                buydetail.goods = order.goods_id
+                buydetail.count = order.goods_count
+                buydetail.price = order.goods_id.gprice
+                buydetail.save()
+
+                # 修改库存数量
+                goods = order.goods_id
+                goods.gkucun -= order.goods_count
+                goods.save()
+                # 计算总价
+                totol += order.goods_count * order.goods_id.gprice
+                # 删除购物车
+                order.delete()
+        buyer.buytotoal = totol
+        buyer.save()
+        transaction.savepoint_commit(sid)
+        return redirect('/user/user_center_order/')
+    except Exception :
+        transaction.savepoint_rollback(sid)
+        return redirect('/cart/')
 
 
 class JSONResponse(HttpResponse):
