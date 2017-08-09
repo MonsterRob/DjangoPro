@@ -24,13 +24,7 @@
             <a href="/search/?q={{ query }}&page={{ page_obj.number|add:-1 }}">上一页</a>
         {% endif %}
 {% load filters %}
-{#        {% for pindex in page_obj|page_list %}#}
-{#            {% if pindex == page.number %}#}
-{#            <a href="#" class="active">{{ pindex }}</a>#}
-{#            {% else %}#}
-{#            <a href="/search/?q={{ query }}&page={{ pindex }}">{{ pindex }}</a>#}
-{#            {% endif %}#}
-{#        {% endfor %}#}
+
 
         {% if page_obj.has_next %}
             <a href="/search/?q={{ query }}&page={{ page_obj.number|add:1 }}">下一页</a>

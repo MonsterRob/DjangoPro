@@ -7,5 +7,5 @@ class GoodsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Goodsinfo
         fields = ['id', 'gtitle', 'gpic',
-                  'gprice',
+                  'gprice', 'gunit'
                   ]

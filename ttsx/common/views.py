@@ -30,8 +30,9 @@ def index(request):
             'list_new': typeinfo.goodsinfo_set.order_by('-id')[0:4],
             'list_click': typeinfo.goodsinfo_set.order_by('-gclick')[0:3]
         })
+    ocount = OrderInfo.objects.all().count()
     class_ = ['fruit', 'seafood', 'meet', 'egg', 'vegetables', 'ice']
-    context = {'list_': list_, 'class_': class_}
+    context = {'list_': list_, 'class_': class_, 'ocount': ocount}
 
     return render(request, 'duser/index.html', context)
 
@@ -50,11 +51,13 @@ def detail(request, goods_id):
     goods.gclick += 1
     goods.save()
     new_goods = goods.gtype.goodsinfo_set.order_by('-id')[:2]
+    ocount = OrderInfo.objects.all().count()
     context = {'goods': goods,
                'kucun': goods.gkucun,
                'list_': list_,
                'class_': class_,
-               'new_goods': new_goods}
+               'new_goods': new_goods,
+               'ocount': ocount}
 
     response = render(request, 'duser/detail.html', context)
     browsed = request.COOKIES.get('browsed')
@@ -73,7 +76,7 @@ def detail(request, goods_id):
     return response
 
 
-# 商品列表页
+# 查看更多商品列表页
 def more_goods(request, type_id, page_id, order_key):
     types = TypeInfo.objects.all()
     # print(serializers.serialize('json', types))
@@ -112,24 +115,35 @@ def more_goods(request, type_id, page_id, order_key):
             prange = range(page_index - 2, page_index + 3)
 
     new_goods = typeinfo.goodsinfo_set.order_by('-id')[:2]
-
+    pagenums = paginator.num_pages
+    ocount = OrderInfo.objects.all().count()
     context = {'typeinfo': typeinfo,
                'page': page,
                'prange': prange,
                'list_': list_,
                'class_': class_,
                'order_key': order_key,
-               'new_goods': new_goods}
+               'new_goods': new_goods,
+               'ocount': ocount,
+               'pagenums': pagenums}
 
     return render(request, 'duser/list.html', context)
 
 
+def show_count(request):
+    ocount = OrderInfo.objects.all().count()
+
+    return JsonResponse({'ocount': ocount})
+
+
+# 商品列表 超链接调用
 def get_list(request):
     # 需要什么参数信息
     # 需要返回什么 页码范围 商品列表
     dic = request.GET
     type_id = int(dic.get('type_id'))
     page_id = int(dic.get('page_id'))
+    print(type_id, page_id)
 
     # 获取分类数据
     typeinfo = TypeInfo.objects.get(pk=type_id)
@@ -146,35 +160,6 @@ def get_list(request):
     page = paginator.page(page_index)
     goods_list = page.object_list
 
-    # 将模型集合序列化
-    serializer = GoodsSerializer(goods_list, many=True)
-    # 将序列化后的数据包装为JSON响应对象
-    js_data = JSONResponse(serializer.data)
-
-    return js_data  # JSONResponse
-
-
-def get_prange(request):
-    # 需要什么参数信息
-    # 需要返回什么 页码范围
-
-    dic = request.GET
-
-    type_id = int(dic.get('type_id'))
-    page_id = int(dic.get('page_id'))
-
-    # 获取分类数据
-    typeinfo = TypeInfo.objects.get(pk=type_id)
-    goods_all = typeinfo.goodsinfo_set.order_by('-id')
-    paginator = Paginator(goods_all, 5)
-
-    # 页码范围限定
-    page_index = int(page_id)
-    if page_index <= 0:
-        page_index = 1
-    if page_index >= paginator.num_pages:
-        page_index = paginator.num_pages
-
     prange = paginator.page_range
     if paginator.num_pages > 5:
         if page_index <= 2:
@@ -187,16 +172,15 @@ def get_prange(request):
             prange = range(page_index - 2, page_index + 3)
 
     prange = list(prange)
-    content = {
-        'index': page_index,
-        'top': prange.pop(),
-        'limit': paginator.num_pages
-    }
 
-    return JsonResponse(content)
+    # 将模型集合序列化
+    serializer = GoodsSerializer(goods_list, many=True)
+    # 将序列化后的数据包装为JSON响应对象
+    data = {'model_list': serializer.data, 'page_range': prange}
+    js_data = JSONResponse(data)
+    return js_data  # JSONResponse
 
 
-# 购物车页-列出所有商品信息
 @logged
 def cart(request):
     #  获取购物车订单信息
@@ -315,7 +299,7 @@ def submit_order(request):
         buyer.save()
         transaction.savepoint_commit(sid)
         return redirect('/user/user_center_order/')
-    except Exception :
+    except Exception:
         transaction.savepoint_rollback(sid)
         return redirect('/cart/')
 

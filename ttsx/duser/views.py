@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from hashlib import md5
 from datetime import datetime, timedelta
 import json
-from common.models import Goodsinfo, BuyInfo, BuyDetailInfo
+from common.models import Goodsinfo, BuyInfo, BuyDetailInfo, OrderInfo
 
 
 # Create your views here.
@@ -115,7 +115,10 @@ def user_center_info(request):
     if browsed:
         list_b = json.loads(browsed)
         goods = Goodsinfo.objects.filter(pk__in=list_b)
-    context = {'goods': goods, 'user': user}
+
+    ocount = OrderInfo.objects.all().count()
+
+    context = {'goods': goods, 'user': user, 'ocount': ocount}
 
     return render(request, 'duser/user_center_info.html', context)
 
@@ -124,8 +127,9 @@ def user_center_info(request):
 @logged
 def user_center_order(request):
     # 需要拉取已结算订单信息和未结算订单信息
-    buyers = BuyInfo.objects.all()  # 所有订单
-    context = {'buyers': buyers}
+    buyers = BuyInfo.objects.order_by('-buydate')  # 所有订单
+    ocount = OrderInfo.objects.all().count()
+    context = {'buyers': buyers, 'ocount': ocount}
     # 一个订单关联多件商品
     return render(request, 'duser/user_center_order.html', context)
 
@@ -135,7 +139,8 @@ def user_center_order(request):
 def user_center_site(request):
     uid = request.session['uid']
     user = UserInfo.objects.get(pk=uid)
-    context = {'user': user}
+    ocount = OrderInfo.objects.all().count()
+    context = {'user': user, 'ocount': ocount}
     return render(request, 'duser/user_center_site.html', context)
 
 
