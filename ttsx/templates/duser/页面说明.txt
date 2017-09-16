@@ -1,0 +1,127 @@
+页面说明：
+
+1、index.html   网站首页，顶部“注册|登录”和用户信息是切换显示的，商品分类菜单点击直接链接滚动到本页面商品模块。首页已加入幻灯片效果。此效果在课程中已讲述如何制作。
+
+2、list.html  商品列表页，商品分类菜单鼠标悬停时切换显示和隐藏，点击菜单后链接到对应商品的列表页。
+
+
+3、detail.html  商品详情页，某一件商品的详细信息。
+
+
+4、cart.html 我的购物车页，列出已放入购物车上的商品
+
+
+5、place_order.html 提交订单页
+
+
+6、login.html 登录页面
+
+
+7、register.html 注册页面，已加入了初步的表单验证效果，此效果在课程中已讲述如何制作。
+
+
+8、user_center_info.html 用户中心-用户信息页 用户中心功能一，查看用户的基本信息
+
+
+9、user_center_order.html 用户中心-用户订单页 用户中心功能二，查看用户的全部订单
+
+
+10、user_center_site.html 用户中心-用户收货地址页 用户中心功能三，查看和设置用户的收货地址
+
+1 首页 页面结构
+    head ...
+        div1 class header_con
+        div2 class searchbar clearfix
+        div3 class navbar_con
+    div4 class center_con clearfix
+    div5*6 class list_model
+        div6 class footer
+    script*2
+2 商品列表
+    head ...
+        div1 class header_con
+        div2 class searchbar clearfix
+        div3 class navbar_con
+    div4 class breadcrumb
+    div5 class main_wrap clearfix
+        div6 class footer
+3 商品详情
+    head ...
+        div1 class header_con
+        div2 class searchbar clearfix
+        div3 class navbar_con
+    div4 class breadcrumb
+    div5 class goods_detail_con clearfix
+    div6 class main_wrap clearfix
+        div7 class footer
+    div8 class add_jump
+    script*2
+4 购物车
+    head ...
+        div1 class header_con
+        div2 class searchbar clearfix
+    div3 class total_count
+    ul4*4
+        div5 class footer
+5 提交订单
+    head ...
+        div1 class header_con
+        div2 class searchbar clearfix
+    (h3+div)*4 3
+    div4 class order_submit clearfix
+        div5 class footer
+    div6 class popon_con
+    script*2
+6 登陆
+    head ...
+    div1 class login_top clearfix
+    div2 class login_form_bg
+    div3 class footer no-mp
+7 注册
+    head ...
+    div1 class register_con
+    div2 class footer no-mp
+
+8 用户中心-个人信息
+    head ...
+        div1 class header_con
+        div2 class search_bar clearfix
+    div3 main_con clearfix
+        div4 class footer
+9 用户中心-全部订单
+    head ...
+        div1 class header_con
+        div2 class search_bar clearfix
+    div3 main_con clearfix
+        div4 class footer
+
+10用户中心-收货地址
+    head ...
+        div1 class header_con
+        div2 class search_bar clearfix
+    div3 main_con clearfix
+        div4 class footer
+
+1 所有页面共有
+    标题 两个坑
+    body 一个坑
+2 common 公用
+3 user 公用
+
+商品：
+    商品编号
+    商品名
+    商品分类
+    文字介绍
+    买家评论
+    图片
+    产地
+    单价
+    人气
+    销量
+    库存量
+问题：
+    怎么将数据库取出的模型对象序列化为json对象？rest_ful
+
+
+

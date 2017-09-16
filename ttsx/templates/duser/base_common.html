@@ -1,0 +1,90 @@
+{% extends 'duser/base.html' %}
+
+{% block before_footer %}
+    {{ block.super }}
+    {% block navbar_con %}
+        <div class="navbar_con">
+
+            {% block navbar_con_son1 %}
+                <div class="navbar">
+                    <h1 class="fl">全部商品分类</h1>
+
+                    <ul class="navlist fl">
+                        <li><a href="{% url 'common:index' %}">首页</a></li>
+                        <li class="interval">|</li>
+                        <li><a href="">手机生鲜</a></li>
+                        <li class="interval">|</li>
+                        <li><a href="">抽奖</a></li>
+                    </ul>
+                </div>
+            {% endblock navbar_con_son1 %}
+
+            {% block navbar_con_son2 %}
+                <div class="navbar clearfix">
+                    <div class="subnav_con fl">
+                        <h1>全部商品分类</h1>
+                        <span></span>
+
+                        <ul class="subnav">
+                            {% block nav %}
+                                <li><a href="#" class="fruit">新鲜水果</a></li>
+                                <li><a href="#" class="seafood">海鲜水产</a></li>
+                                <li><a href="#" class="meet">猪牛羊肉</a></li>
+                                <li><a href="#" class="egg">禽类蛋品</a></li>
+                                <li><a href="#" class="vegetables">新鲜蔬菜</a></li>
+                                <li><a href="#" class="ice">速冻食品</a></li>
+                            {% endblock nav %}
+                        </ul>
+
+
+                    </div>
+                    <ul class="navlist fl">
+                        <li><a href="{% url 'common:index' %}">首页</a></li>
+                        <li class="interval">|</li>
+                        <li><a href="">手机生鲜</a></li>
+                        <li class="interval">|</li>
+                        <li><a href="">抽奖</a></li>
+                    </ul>
+                </div>
+            {% endblock navbar_con_son2 %}
+
+
+        </div>
+    {% endblock navbar_con %}
+
+    {% block for_place_order %}
+    {% endblock for_place_order %}
+
+
+    {% block center_on %}
+    {% endblock center_on %}
+
+    {% block list %}
+    {% endblock list %}
+
+    {% block total_count %}
+    {% endblock total_count %}
+
+    {% block for_cart %}
+    {% endblock for_cart %}
+
+    {% block breadcrumb %}
+    {% endblock breadcrumb %}
+
+    {% block goods_detail_con %}
+    {% endblock goods_detail_con %}
+
+    {% block main_wrap %}
+    {% endblock main_wrap %}
+
+    {% block settelments %}
+    {% endblock settelments %}
+
+{% endblock before_footer %}
+
+
+
+
+
+
+

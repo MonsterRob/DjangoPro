@@ -1,0 +1,29 @@
+{%extends 'duser/base.html'%}
+
+
+{%block before_footer%}
+{{block.super}}
+
+{%block for_login%}
+{%endblock for_login%}
+{%block for_register%}
+{%endblock for_register%}
+
+{%block main_con%}
+<div class="main_con clearfix">
+		<div class="left_menu_con clearfix">
+			<h3>用户中心</h3>
+			<ul>
+				<li><a href="{% url 'duser:user_center_info'%}" class="{%block class1%}{%endblock class1%}">· 个人信息</a></li>
+				<li><a href="{% url  'duser:user_center_order' %}" class="{%block class2%}{%endblock class2%}">· 全部订单</a></li>
+				<li><a href="{% url  'duser:user_center_site'%}" class="{%block class3%}{%endblock class3%}">· 收货地址</a></li>
+			</ul>
+		</div>
+
+        {% block right_content%}
+        {% endblock right_content%}
+	</div>
+{% endblock main_con%}
+
+{%endblock before_footer%}
+

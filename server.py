@@ -4,6 +4,7 @@
 # asdasd
 
 if __name__ == '__main__':
+
     print('add a flien   asda s d asd  asd')
     print('asdasda')
     print('del a line add  a new lint')
@@ -16,5 +17,10 @@ if __name__ == '__main__':
     print('some on edit this file')
     print('my add a line')
     print('so add a line')
+    print('hahahha')
+    print('xxxxx')
+    print('adsasdad')
+    print('asdasdasd')
+    print('add a asdasd asdasd asda sd')
 
 

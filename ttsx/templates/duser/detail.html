@@ -1,0 +1,175 @@
+{% extends 'duser/base_common.html' %}
+{% load filters %}
+{% block title %}商品详情{% endblock title %}
+
+{% block search_bar_1 %}
+{% endblock search_bar_1 %}
+{% block navbar_con_son1 %}
+{% endblock navbar_con_son1 %}
+
+
+{% block breadcrumb %}
+    <div class="breadcrumb">
+        <a href="#">全部分类</a>
+        <span>></span>
+        <a href="#">新鲜水果</a>
+        <span>></span>
+        <a href="#">商品详情</a>
+    </div>
+{% endblock breadcrumb %}
+
+{% block nav %}
+    {% for item in list_ %}
+        <li><a href="{% url 'common:more_goods' item.type.id 1 1 %}"
+               class="{{ class_|my_index:forloop.counter0 }}">{{ item.type.ttitle }}</a></li>
+    {% endfor %}
+{% endblock nav %}
+
+{% block goods_detail_con %}
+    <div class="goods_detail_con clearfix">
+        <div class="goods_detail_pic fl"><img src="/static/{{ goods.gpic }}"></div>
+
+        <div class="goods_detail_list fr">
+            <h3>{{ goods.gtitle }}</h3>
+            <p>{{ goods.gjianjie }}</p>
+            <div class="prize_bar">
+                <span class="show_pirze">¥<em>{{ goods.gprice }}</em></span>
+                <span class="show_unit">单  位：{{ goods.gunit }}</span>
+            </div>
+            <div class="goods_num clearfix">
+                <div class="num_name fl">数 量：</div>
+                <div class="num_add fl">
+                    <input type="text" class="num_show fl" value="1">
+                    <input type="hidden" id="kucun" value="{{ kucun }}">
+                    <a href="javascript:;" class="add fr">+</a>
+                    <a href="javascript:;" class="minus fr">-</a>
+                </div>
+            </div>
+            <div class="total">总价：<em>{{ goods.gprice }}</em></div>
+            <div class="operate_btn">
+                <a href="javascript:;" class="buy_btn">立即购买</a>
+                <a href="javascript:add_goods({{ goods.id }})" class="add_cart" id="add_cart">加入购物车</a>
+            </div>
+        </div>
+    </div>
+{% endblock goods_detail_con %}
+
+
+{% block main_wrap %}
+    <div class="main_wrap clearfix">
+        <div class="l_wrap fl clearfix">
+            <div class="new_goods">
+                <h3>新品推荐</h3>
+                <ul>
+                    {% for item_new in new_goods %}
+                        <li>
+                            <a href="#"><img src="/static/{{ item_new.gpic }}"></a>
+                            <h4><a href="{% url 'common:detail' item_new.id %}">{{ item_new.gtitle }}</a></h4>
+                            <div class="prize">￥{{ item_new.gprice }}</div>
+                        </li>
+
+                    {% endfor %}
+
+                </ul>
+            </div>
+        </div>
+
+        <div class="r_wrap fr clearfix">
+            <ul class="detail_tab clearfix">
+                <li class="active">商品介绍</li>
+                <li>评论</li>
+            </ul>
+
+            <div class="tab_content">
+                <dl>
+                    <dt>商品详情：</dt>
+                    <dd> {{ goods.gcontent|safe }}</dd>
+                </dl>
+            </div>
+
+        </div>
+    </div>
+{% endblock main_wrap %}
+
+{% block after_footer %}
+    <div class="add_jump"></div>
+{% endblock after_footer %}
+
+{% block bottom_script %}
+    <script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript">
+
+        var $add_x = $('#add_cart').offset().top;
+        var $add_y = $('#add_cart').offset().left;
+
+        var $to_x = $('#show_count').offset().top;
+        var $to_y = $('#show_count').offset().left;
+
+        $(".add_jump").css({'left': $add_y + 80, 'top': $add_x + 10, 'display': 'block'})
+        $('#add_cart').click(function () {
+            $(".add_jump").stop().animate({
+                    'left': $to_y + 7,
+                    'top': $to_x + 7
+                },
+                "fast", function () {
+                    $(".add_jump").fadeOut('fast', function () {
+                        var obj_show = $('#show_count');
+                        var num = parseInt(obj_show.html());
+                        num++;
+                        obj_show.html(num);
+                    });
+
+                });
+        })
+    </script>
+
+    <script>
+        $(function () {
+            $('.num_show').blur(function () {
+                var num = parseInt($(this).val());
+                if (isNaN(num)) {
+                    num = 1;
+                }
+                if (num <= 0) {
+                    num = 1;
+                }
+                var kucun = $('#kucun').val();
+                if (num >= kucun) {
+                    num = kucun;
+                }
+                var price = parseFloat($('.show_pirze em').text())
+                var total = price * num;
+                $('.total em').text(total.toFixed(2) + '元');
+                $(this).val(num)
+
+
+            });
+
+            $(".add").click(function () {
+                var obj_num = $('.num_show');
+                var num = obj_num.val();
+                num++;
+                obj_num.val(num).blur();
+
+
+            }).blur();
+
+            $('.minus').click(function () {
+                var obj_num = $('.num_show');
+                var num = obj_num.val();
+                num--;
+                obj_num.val(num).blur();
+            });
+
+        });
+        function add_goods(gid) {
+            var gcount = $('.num_show').val();
+
+            $.get('/add_goods/', {'gid': gid, 'gcount': gcount}, function (data) {
+                console.log(data)
+            });
+        }
+    </script>
+{% endblock bottom_script %}
+
+
