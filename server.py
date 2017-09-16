@@ -4,10 +4,10 @@
 # asdasd
 
 if __name__ == '__main__':
-    print('dev add a line')
     print('add a flien   asda s d asd  asd')
     print('asdasda')
     print('del a line add  a new lint')
     print('add a new line')
+    print('add a ne liiiii')
 
 
