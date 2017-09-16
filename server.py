@@ -12,5 +12,6 @@ if __name__ == '__main__':
     print('web edit')
     print('another one edit this file')
     print('my add')
+    print('*****')
 
 
