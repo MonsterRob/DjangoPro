@@ -9,5 +9,6 @@ if __name__ == '__main__':
     print('del a line add  a new lint')
     print('add a new line')
     print('add a ne liiiii')
+    print('web edit')
 
 
