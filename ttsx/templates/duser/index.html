@@ -1,0 +1,79 @@
+{% extends 'duser/base_common.html' %}
+{% load filters %}
+{% block title %}首页{% endblock title %}
+
+{% block top_script %}
+    <script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="/static/js/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/static/js/slide.js"></script>
+{% endblock top_script %}
+
+{% block navbar_con_son2 %}
+{% endblock navbar_con_son2 %}
+
+{% block center_on %}
+    <div class="center_con clearfix">
+        <ul class="subnav fl">
+            {% for item in list_ %}
+             <li><a href="#model0{{ forloop.counter }}" class="{{ class_|my_index:forloop.counter0}}">{{ item.type.ttitle }}</a></li>
+            {% endfor %}
+
+        </ul>
+        <div class="slide fl">
+            <ul class="slide_pics">
+                <li><img src="/static/images/slide.jpg" alt="幻灯片"></li>
+                <li><img src="/static/images/slide02.jpg" alt="幻灯片"></li>
+                <li><img src="/static/images/slide03.jpg" alt="幻灯片"></li>
+                <li><img src="/static/images/slide04.jpg" alt="幻灯片"></li>
+            </ul>
+            <div class="prev"></div>
+            <div class="next"></div>
+            <ul class="points"></ul>
+        </div>
+        <div class="adv fl">
+            <a href="#"><img src="/static/images/adv01.jpg"></a>
+            <a href="#"><img src="/static/images/adv02.jpg"></a>
+        </div>
+    </div>
+{% endblock center_on %}
+
+
+{% block list %}
+    {% for item in list_ %}
+        <div class="list_model">
+            <div class="list_title clearfix">
+                <h3 class="fl" id="model0{{ forloop.counter }}">{{ item.type.ttitle }}</h3>
+                <div class="subtitle fl">
+                    <span>|</span>
+                    {% for click in item.list_click %}
+                     <a href="{% url 'common:detail' click.id %}">{{ click.gtitle|truncatechars:10 }}</a>
+                    {% endfor %}
+                </div>
+                <a href="{% url 'common:more_goods' item.type.id 1 1 %}" class="goods_more fr" id="fruit_more">查看更多 ></a>
+            </div>
+
+            <div class="goods_con clearfix">
+                <div class="goods_banner fl"><img src="/static/images/banner0{{ forloop.counter }}.jpg"></div>
+                <ul class="goods_list fl">
+                    {% for new in item.list_new %}
+                     <li>
+                        <h4><a href="{% url 'common:detail' new.id %}">{{ new.gtitle }}</a></h4>
+                        <a href="{% url 'common:detail' new.id %}"><img src="/static/{{ new.gpic }}"></a>
+                        <div class="prize">¥ {{ new.gprice }}</div>
+                    </li>
+                    {% endfor %}
+                    
+
+
+                </ul>
+            </div>
+        </div>
+
+    {% endfor %}
+
+
+
+
+{% endblock list %}
+
+

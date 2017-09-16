@@ -1,0 +1,194 @@
+{% extends 'duser/base_common.html' %}
+{% block title %}商品列表{% endblock title %}
+{% load filters %}
+
+
+{% block navbar_con_son1 %}
+{% endblock navbar_con_son1 %}
+{% block breadcrumb %}
+    <div class="breadcrumb">
+        <a href="#">全部分类</a>
+        <span>></span>
+        <a href="#">{{ typeinfo.ttitle }}</a>
+    </div>
+{% endblock breadcrumb %}
+{% block search_bar_1 %}
+{% endblock search_bar_1 %}
+{% block nav %}
+    {% for item in list_ %}
+        <li><a href="{% url 'common:more_goods' item.type.id 1 1 %}"
+               class="{{ class_|my_index:forloop.counter0 }}">{{ item.type.ttitle }}</a></li>
+    {% endfor %}
+{% endblock nav %}
+
+{% block main_wrap %}
+    <div class="main_wrap clearfix">
+        <div class="l_wrap fl clearfix">
+            <div class="new_goods">
+                <h3>新品推荐</h3>
+                <ul>
+                    {% for item_new in new_goods %}
+                        <li>
+                            <a href="#"><img src="/static/{{ item_new.gpic }}"></a>
+                            <h4><a href="{% url 'common:detail' item_new.id %}">{{ item_new.gtitle }}</a></h4>
+                            <div class="prize">￥{{ item_new.gprice }}</div>
+                        </li>
+
+                    {% endfor %}
+
+                </ul>
+            </div>
+        </div>
+
+        <div class="r_wrap fr clearfix">
+            <div class="sort_bar">
+                <a href="{% url 'common:more_goods' typeinfo.id 1 1 %}">默认</a>
+                <a href="{% url 'common:more_goods' typeinfo.id 1 2 %}">价格</a>
+                <a href="{% url 'common:more_goods' typeinfo.id 1 3 %}">人气</a>
+            </div>
+
+            <ul class="goods_type_list clearfix">
+                {% for goods in page %}
+                    <li>
+                        <a href="{% url 'common:detail' goods.id %}"><img src="/static/{{ goods.gpic }}"></a>
+                        <h4><a href="{% url 'common:detail' goods.id %}">{{ goods.gtitle }}</a></h4>
+                        <div class="operate">
+                            <span class="prize">￥{{ goods.gprice }}</span>
+                            <span class="unit">{{ goods.gunit }}</span>
+                            <a href="javascript:add_goods({{ goods.id }});" class="add_goods" title="加入购物车"></a>
+                        </div>
+                    </li>
+                {% endfor %}
+
+
+            </ul>
+            <input type="hidden" value="{{ pagenums }}" id="pagenums">
+
+            <div class="pagenation">
+
+                {% if page.has_previous %}
+                    <a onclick="void(0);return false;" href="#" data-typeid="{{ typeinfo.id }}"
+                       data-page="{{ 1 }}">首页</a>
+                    <a onclick="void(0);return false;" href="#" data-typeid="{{ typeinfo.id }}"
+                       data-page="{{ page.number|add:-1 }}">上一页</a>
+
+                {% endif %}
+
+                {% for p_index in prange %}
+
+                    {% if p_index == page.number %}
+
+                        <a class="active" onclick="void(0);return false;" href="#" data-typeid="{{ typeinfo.id }}"
+                           data-page="{{ p_index }}">{{ p_index }}</a>
+                    {% else %}
+                        <a onclick="void(0);return false;" href="#" data-typeid="{{ typeinfo.id }}"
+                           data-page="{{ p_index }}">{{ p_index }}</a>
+                    {% endif %}
+
+                {% endfor %}
+
+                {% if page.has_next %}
+                    <a onclick="void(0);return false;" href="#" data-typeid="{{ typeinfo.id }}"
+                       data-page="{{ page.number|add:+1 }}">下一页</a>
+                    <a onclick="void(0);return false;" href="#" data-typeid="{{ typeinfo.id }}"
+                       data-page="{{ page.paginator.num_pages }}">末页</a>
+
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+{% endblock main_wrap %}
+
+{% block after_footer %}
+    <script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
+    <script>
+        $(document).delegate(".pagenation > a", 'click', function () {
+            var clicked_a = $(this);
+            var p = clicked_a.parent();
+            var type_id = $(this).attr('data-typeid');
+            var page_id = $(this).attr('data-page');
+            var page_total = $('#pagenums').val();
+            $.get('/get_list/', {'type_id': type_id, 'page_id': page_id}, function (data_list) {
+                var g_list = $('.goods_type_list');
+                g_list.empty();
+                for (var index = 0; index < data_list.model_list.length; index++) {
+                    var goods_obj = data_list.model_list[index];
+                    var li_str = '<li>\
+                        <a href="/detail' + goods_obj.id + '/"><img src="/static/' + goods_obj.gpic + '"></a>\
+                        <h4><a href="/detail' + goods_obj.id + '/">' + goods_obj.gtitle + '</a></h4>\
+                        <div class="operate">\
+                            <span class="prize">￥' + goods_obj.gprice + '</span>\
+                            <span class="unit">' + goods_obj.gunit + '</span>\
+                            <a href="javascript:add_goods(' + goods_obj.id + ');" class="add_goods" title="加入购物车"></a>\
+                        </div>\
+                    </li>';
+
+                    g_list.append(li_str)
+
+                }
+
+                p.empty();
+
+                if (page_id >= 3) {
+
+                    var pre_page = parseInt(page_id) - 1;
+                    if (pre_page <= 1) {
+                        pre_page = 1;
+                    }
+                    pre_page = pre_page.toString();
+                    var a_str = '<a onclick="void(0);return false;" href="#" data-typeid="' + type_id + '"\
+                       data-page="1">首页</a>\
+                    <a onclick="void(0);return false;" href="#" data-typeid="' + type_id + '"\
+                       data-page="' + pre_page + '">上一页</a>';
+                    p.append(a_str);
+                }
+                for (var index2 = 0; index2 < data_list.page_range.length; index2++) {
+                    var p_id = data_list.page_range[index2];
+                    var a_str2 = '';
+
+                    if (page_id == p_id) {
+                        a_str2 = '<a onclick="void(0);return false;" href="#" ' + "class='active'" + 'data-typeid="' + type_id + '"\
+                       data-page="' + p_id + '">' + p_id + '</a>';
+                    }
+                    else {
+                        a_str2 = '<a onclick="void(0);return false;" href="#" data-typeid="' + type_id + '"\
+                       data-page="' + p_id + '">' + p_id + '</a>';
+                    }
+
+                    p.append(a_str2);
+                }
+
+                var next_page = parseInt(page_id) + 1;
+                if (next_page >= page_total) {
+                    next_page = page_total;
+                }
+                next_page = next_page.toString();
+                var a_str3 = '<a onclick="void(0);return false;" href="#" data-typeid="' + type_id + '"\
+                       data-page="' + next_page + '">下一页</a>\
+                    <a onclick="void(0);return false;" href="#" data-typeid="' + type_id + '"\
+                       data-page="' + page_total + '">末页</a>';
+                p.append(a_str3);
+
+            });
+
+        })
+        ;
+
+    </script>
+    <script>
+        $(function () {
+            var order_key = parseInt({{ order_key }}) - 1;
+            $('.sort_bar a').eq(order_key).addClass('active');
+        });
+
+        function add_goods(gid) {
+
+            $.get('/add_goods/', {'gid': gid, 'gcount': 1}, function (data) {
+                console.log(data)
+            });
+        }
+
+    </script>
+{% endblock after_footer %}
+
