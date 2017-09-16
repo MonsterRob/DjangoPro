@@ -8,5 +8,6 @@ if __name__ == '__main__':
     print('hahahha')
     print('xxxxx')
     print('adsasdad')
-    print('asdasdasdasdada')
     print('asdasdasd')
+    print('add a asdasd asdasd asda sd')
+
