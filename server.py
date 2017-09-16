@@ -4,7 +4,6 @@
 # asdasd
 
 if __name__ == '__main__':
-    print('hello')
     print('hahahha')
     print('xxxxx')
     print('adsasdad')
